@@ -47,7 +47,7 @@ export default class CreateRoomPage extends Component {
                 guest_can_pause: this.state.guestCanPause,
             }),
         };
-        fetch("/api/create-room/", requestOptions)
+        fetch("/api/create-room", requestOptions)
             .then((response) => response.json())
             .then((data) => console.log(data));
                 
@@ -87,11 +87,11 @@ export default class CreateRoomPage extends Component {
             </Grid>
                 <Grid item xs={12} align="center">
                     <FormControl>
-                        <TextField 
-                        required={true} 
+                        <TextField
+                        required={true}
                         type="number"
                         onChange={this.handleVotesChange}
-                        defaultValue={this.defaultVotes} 
+                        defaultValue={this.defaultVotes}
                         inputProps={{
                             min: 1,
                             style: {textAlign: "center"},

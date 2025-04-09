@@ -36,5 +36,5 @@ class CreateRoomView(APIView):
                 room = Room(host=host, guest_can_pause=guest_can_pause, votes_to_skip=votes_to_skip)
                 room.save()
             
-            return Response(RoomSerializer(room).data, status=status.HTTP_201_CREATED)
+            return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
                 
