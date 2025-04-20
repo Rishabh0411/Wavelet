@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Grid, Button, Typography } from "@mui/material";
 
-export default function Room() {
+export default function Room(props) {
     const { roomCode } = useParams();
     const navigate = useNavigate();
 
@@ -13,6 +14,7 @@ export default function Room() {
         fetch(`/api/get-room?code=${roomCode}`)
             .then((response) => {
                 if (!response.ok) {
+                    if (props.leaveRoomCallback) props.leaveRoomCallback();
                     navigate("/");
                 }
                 return response.json();
@@ -25,14 +27,57 @@ export default function Room() {
             .catch((error) => {
                 console.error("Error fetching room details:", error);
             });
-    }, [roomCode, navigate]);
+    }, [roomCode, navigate, props]);
+
+    const leaveButtonPressed = () => {
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        };
+        fetch("/api/leave-room", requestOptions).then((_response) => {
+            if (props.leaveRoomCallback) props.leaveRoomCallback();
+            navigate("/");
+        });
+    };
 
     return (
-        <div>
-            <h3>Room Code: {roomCode}</h3>
-            <p>Votes Required To Skip: {votesToSkip}</p>
-            <p>Guest Can Pause Playback: {guestCanPause.toString()}</p>
-            <p>Host: {isHost.toString()}</p>
-        </div>
+        <Grid
+            container
+            spacing={3}
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            style={{ minHeight: "100vh" }}
+        >
+            <Grid item>
+                <Typography component="h4" variant="h4">
+                    Room Code: {roomCode}
+                </Typography>
+            </Grid>
+            <Grid item>
+                <Typography component="h5" variant="h5">
+                    Votes Required To Skip: {votesToSkip}
+                </Typography>
+            </Grid>
+            <Grid item>
+                <Typography component="h5" variant="h5">
+                    Guest Can Pause Playback: {guestCanPause.toString()}
+                </Typography>
+            </Grid>
+            <Grid item>
+                <Typography component="h5" variant="h5">
+                    Host: {isHost.toString()}
+                </Typography>
+            </Grid>
+            <Grid item>
+                <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={leaveButtonPressed}
+                >
+                    Leave Room
+                </Button>
+            </Grid>
+        </Grid>
     );
 }

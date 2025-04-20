@@ -29,13 +29,20 @@ export default function RoomJoinPage() {
     };
 
     return (
-        <Grid container spacing={1}>
-            <Grid item xs={12} align="center">
+        <Grid
+            container
+            spacing={3}
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            style={{ minHeight: "100vh" }}
+        >
+            <Grid item>
                 <Typography component="h4" variant="h4">
                     Join A Room
                 </Typography>
             </Grid>
-            <Grid item xs={12} align="center">
+            <Grid item>
                 <TextField
                     error={Boolean(error)}
                     label="Code"
@@ -46,7 +53,7 @@ export default function RoomJoinPage() {
                     onChange={handleTextFieldChange}
                 />
             </Grid>
-            <Grid item xs={12} align="center">
+            <Grid item>
                 <Button
                     color="primary"
                     variant="contained"
@@ -55,7 +62,7 @@ export default function RoomJoinPage() {
                     Join
                 </Button>
             </Grid>
-            <Grid item xs={12} align="center">
+            <Grid item>
                 <Button
                     color="secondary"
                     variant="contained"

@@ -46,13 +46,20 @@ export default function CreateRoomPage() {
     };
 
     return (
-        <Grid container spacing={1}>
-            <Grid item xs={12} align="center">
+        <Grid
+            container
+            spacing={3}
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            style={{ minHeight: "100vh" }}
+        >
+            <Grid item>
                 <Typography component="h4" variant="h4">
                     Create A Room
                 </Typography>
             </Grid>
-            <Grid item xs={12} align="center">
+            <Grid item>
                 <FormControl component="fieldset">
                     <FormHelperText>
                         <div align="center">Guest Control Of Playback State</div>
@@ -73,7 +80,7 @@ export default function CreateRoomPage() {
                     </RadioGroup>
                 </FormControl>
             </Grid>
-            <Grid item xs={12} align="center">
+            <Grid item>
                 <FormControl>
                     <TextField
                         required
@@ -90,16 +97,17 @@ export default function CreateRoomPage() {
                     </FormHelperText>
                 </FormControl>
             </Grid>
-            <Grid item xs={12} align="center">
+            <Grid item>
                 <Button color="secondary" variant="contained" onClick={handleRoomButtonPressed}>
                     Create A Room
                 </Button>
             </Grid>
-            <Grid item xs={12} align="center">
+            <Grid item>
                 <Button color="primary" variant="contained" component={Link} to="/">
                     Back
                 </Button>
             </Grid>
         </Grid>
     );
+    
 }
