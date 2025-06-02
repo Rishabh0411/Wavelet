@@ -21,6 +21,22 @@ const MusicPlayer = ({
   time = 0,
   duration = 1,
 }) => {
+  const pauseSong = () => {
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch("/spotify/pause", requestOptions);
+  };
+
+  const playSong = () => {
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch("/spotify/play", requestOptions);
+  };
+
   const songProgress = (time / duration) * 100;
 
   return (
@@ -46,8 +62,12 @@ const MusicPlayer = ({
               <IconButton>
                 <SkipPreviousIcon fontSize="large" />
               </IconButton>
-              <IconButton>
-                {is_playing ? <PauseIcon fontSize="large" /> : <PlayArrowIcon fontSize="large" />}
+              <IconButton onClick={is_playing ? pauseSong : playSong}>
+                {is_playing ? (
+                  <PauseIcon fontSize="large" />
+                ) : (
+                  <PlayArrowIcon fontSize="large" />
+                )}
               </IconButton>
               <IconButton>
                 <SkipNextIcon fontSize="large" />
