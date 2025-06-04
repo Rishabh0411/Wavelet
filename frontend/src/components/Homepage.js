@@ -4,6 +4,7 @@ import CreateRoomPage from "./CreateRoomPage";
 import Room from "./Room";
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
 import { Grid, Button, ButtonGroup, Typography } from "@mui/material";
+import Info from "./Info";
 
 export default class Homepage extends Component {
     constructor(props) {
@@ -38,13 +39,16 @@ export default class Homepage extends Component {
             >
                 <Grid item>
                     <Typography component="h4" variant="h4">
-                        Music Controller
+                        Wavelet
                     </Typography>
                 </Grid>
                 <Grid item>
                     <ButtonGroup variant="contained" color="primary">
                         <Button color="primary" to="/join" component={Link}>
                             Join a Room
+                        </Button>
+                        <Button color="default" to="/info" component={Link}>
+                            Info
                         </Button>
                         <Button color="secondary" to="/create" component={Link}>
                             Create a Room
@@ -70,6 +74,7 @@ export default class Homepage extends Component {
                         } 
                     />
                     <Route path="/create" element={<CreateRoomPage />} />
+                    <Route path="/info" element={<Info />} />
                     <Route path="/join" element={<RoomJoinPage />} />
                     <Route 
                         path="/room/:roomCode" 
