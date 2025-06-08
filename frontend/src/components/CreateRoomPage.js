@@ -13,7 +13,7 @@ import {
   Alert,
   Paper,
   Box,
-  Fade,
+  Grow,
 } from "@mui/material";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -103,19 +103,16 @@ export default function CreateRoomPage(props) {
           onClick={update ? handleUpdateButtonPressed : handleRoomButtonPressed}
           disabled={votesToSkipState < 1}
           sx={{
-            fontWeight: "bold",
-            fontSize: "1.05rem",
+            fontWeight: 600,
             py: 1.5,
-            background: update
-              ? "linear-gradient(45deg, #ff4e50, #f9d423)"
-              : "linear-gradient(45deg, #43cea2, #185a9d)",
-            borderRadius: "12px",
-            transition: "all 0.3s ease-in-out",
+            fontSize: "1rem",
+            borderRadius: "8px",
+            textTransform: "none",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+            transition: "all 0.25s ease",
             "&:hover": {
-              transform: "scale(1.05)",
-              background: update
-                ? "linear-gradient(45deg, #f12711, #f5af19)"
-                : "linear-gradient(45deg, #30cfd0, #330867)",
+              transform: "scale(1.03)",
+              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
             },
           }}
         >
@@ -131,14 +128,13 @@ export default function CreateRoomPage(props) {
           sx={{
             fontWeight: 600,
             fontSize: "0.95rem",
-            borderRadius: "12px",
-            color: "#ffffff",
-            borderColor: "#ffffff",
-            mt: { xs: 2, sm: 0 },
+            borderRadius: "8px",
+            color: "#555",
+            borderColor: "#ccc",
+            textTransform: "none",
             "&:hover": {
-              backgroundColor: "rgba(255,255,255,0.1)",
-              borderColor: "#ddd",
-              color: "#ddd",
+              backgroundColor: "rgba(0,0,0,0.03)",
+              borderColor: "#aaa",
             },
           }}
         >
@@ -152,27 +148,25 @@ export default function CreateRoomPage(props) {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(to right, #2c3e50, #4ca1af)",
+        background: "#f5f7fa",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        p: 2,
+        padding: 3,
       }}
     >
-      <Fade in={show} timeout={800}>
+      <Grow in={show} timeout={800}>
         <Paper
-          elevation={10}
+          elevation={3}
           sx={{
-            p: 5,
-            borderRadius: "25px",
-            maxWidth: 540,
-            width: "100%",
+            padding: 5,
+            borderRadius: "24px",
             textAlign: "center",
-            background: "rgba(255, 255, 255, 0.08)",
-            backdropFilter: "blur(15px)",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            boxShadow:
-              "0 15px 30px rgba(0, 0, 0, 0.3), inset 0 0 1px rgba(255, 255, 255, 0.3)",
+            backgroundColor: "#fff",
+            color: "#333",
+            maxWidth: 520,
+            width: "100%",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
           }}
         >
           <Grid
@@ -207,16 +201,16 @@ export default function CreateRoomPage(props) {
 
             <Grid item>
               <Typography
-                variant="h3"
+                variant="h4"
+                component="h1"
                 sx={{
                   fontWeight: 800,
-                  color: "#fff",
-                  textShadow: "1px 1px 10px rgba(0,0,0,0.4)",
-                  letterSpacing: "0.08em",
+                  color: "#1976d2",
+                  letterSpacing: "0.05em",
                   userSelect: "none",
                 }}
               >
-                {update ? "Update Room" : "Create Room"}
+                {update ? "Update Room" : "Create a Room"}
               </Typography>
             </Grid>
 
@@ -226,8 +220,7 @@ export default function CreateRoomPage(props) {
                   <Typography
                     align="center"
                     variant="body2"
-                    color="white"
-                    sx={{ opacity: 0.8 }}
+                    color="text.secondary"
                   >
                     Guest Control of Playback State
                   </Typography>
@@ -240,15 +233,13 @@ export default function CreateRoomPage(props) {
                 >
                   <FormControlLabel
                     value="true"
-                    control={<Radio sx={{ color: "#43cea2" }} />}
+                    control={<Radio color="primary" />}
                     label="Play/Pause"
-                    sx={{ color: "white" }}
                   />
                   <FormControlLabel
                     value="false"
-                    control={<Radio sx={{ color: "#ff4e50" }} />}
+                    control={<Radio color="secondary" />}
                     label="No Control"
-                    sx={{ color: "white" }}
                   />
                 </RadioGroup>
               </FormControl>
@@ -257,7 +248,7 @@ export default function CreateRoomPage(props) {
             <Grid item sx={{ width: "100%" }}>
               <FormControl fullWidth>
                 <Typography
-                  sx={{ mb: 1, color: "#ccc", fontSize: "0.9rem" }}
+                  sx={{ mb: 1, fontSize: "0.9rem", fontWeight: 500 }}
                 >
                   Votes To Skip
                 </Typography>
@@ -268,18 +259,12 @@ export default function CreateRoomPage(props) {
                   onChange={handleVotesChange}
                   inputProps={{ min: 1 }}
                   variant="outlined"
-                  sx={{
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    borderRadius: "8px",
-                    input: { color: "#fff", fontWeight: 600 },
-                    label: { color: "#ccc" },
-                  }}
                 />
                 <FormHelperText>
                   <Typography
                     align="center"
                     variant="body2"
-                    sx={{ mb: 1, color: "#ccc", fontSize: "0.9rem" }}
+                    color="text.secondary"
                   >
                     Number of votes required to skip a song
                   </Typography>
@@ -290,7 +275,7 @@ export default function CreateRoomPage(props) {
             <Grid item sx={{ width: "100%" }}>{renderButtons()}</Grid>
           </Grid>
         </Paper>
-      </Fade>
+      </Grow>
     </Box>
   );
 }
