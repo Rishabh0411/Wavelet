@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   TextField,
@@ -106,13 +107,14 @@ export default function CreateRoomPage(props) {
             fontWeight: 600,
             py: 1.5,
             fontSize: "1rem",
-            borderRadius: "8px",
+            borderRadius: "10px",
             textTransform: "none",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-            transition: "all 0.25s ease",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            backdropFilter: "blur(10px)",
             "&:hover": {
-              transform: "scale(1.03)",
-              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+              transform: "scale(1.02)",
+              backgroundColor: "#1565c0",
+              boxShadow: "0 8px 18px rgba(0,0,0,0.15)",
             },
           }}
         >
@@ -128,12 +130,12 @@ export default function CreateRoomPage(props) {
           sx={{
             fontWeight: 600,
             fontSize: "0.95rem",
-            borderRadius: "8px",
+            borderRadius: "10px",
             color: "#555",
             borderColor: "#ccc",
             textTransform: "none",
             "&:hover": {
-              backgroundColor: "rgba(0,0,0,0.03)",
+              backgroundColor: "rgba(255,255,255,0.05)",
               borderColor: "#aaa",
             },
           }}
@@ -148,25 +150,57 @@ export default function CreateRoomPage(props) {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "#f5f7fa",
+        background: "radial-gradient(circle at 30% 20%, rgba(173,216,230,0.4), transparent 50%), radial-gradient(circle at 70% 80%, rgba(147,112,219,0.3), transparent 60%), linear-gradient(to bottom right, #e3f2fd, #ede7f6)",
+        position: "relative",
+        overflow: "hidden",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 3,
+        px: 2,
       }}
     >
+      {/* Decorative Blobs */}
+      <Box
+        sx={{
+          position: "absolute",
+          width: "400px",
+          height: "400px",
+          borderRadius: "50%",
+          background: "rgba(98,0,238,0.15)",
+          filter: "blur(100px)",
+          top: "10%",
+          left: "10%",
+          zIndex: 0,
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          width: "500px",
+          height: "500px",
+          borderRadius: "50%",
+          background: "rgba(33,150,243,0.1)",
+          filter: "blur(120px)",
+          bottom: "5%",
+          right: "5%",
+          zIndex: 0,
+        }}
+      />
+
       <Grow in={show} timeout={800}>
         <Paper
-          elevation={3}
+          elevation={6}
           sx={{
             padding: 5,
             borderRadius: "24px",
             textAlign: "center",
-            backgroundColor: "#fff",
+            backgroundColor: "rgba(255, 255, 255, 0.65)",
+            backdropFilter: "blur(12px)",
             color: "#333",
             maxWidth: 520,
             width: "100%",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
+            zIndex: 1,
+            boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
           }}
         >
           <Grid
@@ -206,8 +240,7 @@ export default function CreateRoomPage(props) {
                 sx={{
                   fontWeight: 800,
                   color: "#1976d2",
-                  letterSpacing: "0.05em",
-                  userSelect: "none",
+                  letterSpacing: "0.04em",
                 }}
               >
                 {update ? "Update Room" : "Create a Room"}

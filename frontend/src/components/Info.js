@@ -6,7 +6,7 @@ import {
   Button,
   IconButton,
   Paper,
-  Fade
+  Fade,
 } from '@mui/material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -20,8 +20,10 @@ const pages = {
 export default function Info() {
   const [page, setPage] = useState(pages.JOIN);
 
-  const joinInfo = () => '🎧 Join a room to listen to music with others in real-time. Enjoy synced playback, chat, and good vibes!';
-  const createInfo = () => '🎶 Create your own music room and take control. Share your taste, host parties, or just chill!';
+  const joinInfo = () =>
+    '🎧 Join a room to listen to music with others in real-time. Enjoy synced playback, chat, and good vibes!';
+  const createInfo = () =>
+    '🎶 Create your own music room and take control. Share your taste, host parties, or just chill!';
 
   useEffect(() => {
     console.log('Info component mounted');
@@ -31,41 +33,90 @@ export default function Info() {
   }, []);
 
   const togglePage = () => {
-    setPage((prevPage) => (prevPage === pages.CREATE ? pages.JOIN : pages.CREATE));
+    setPage((prevPage) =>
+      prevPage === pages.CREATE ? pages.JOIN : pages.CREATE
+    );
   };
 
   return (
     <Box
       sx={{
+        position: 'relative',
         minHeight: '100vh',
+        background: 'linear-gradient(135deg, #e0e7ff, #f3e8ff)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #1f1c2c, #928dab)',
-        padding: 2,
+        px: 2,
+        overflow: 'hidden',
       }}
     >
+      {/* Blob 1 */}
+      <Box
+        sx={{
+          position: 'absolute',
+          width: 300,
+          height: 300,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 30% 30%, #a5b4fc, #818cf8)',
+          filter: 'blur(100px)',
+          top: '-50px',
+          left: '-80px',
+          zIndex: 0,
+        }}
+      />
+
+      {/* Blob 2 */}
+      <Box
+        sx={{
+          position: 'absolute',
+          width: 250,
+          height: 250,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 70% 70%, #f3e8ff, #d8b4fe)',
+          filter: 'blur(100px)',
+          bottom: '-60px',
+          right: '-60px',
+          zIndex: 0,
+        }}
+      />
+
       <Paper
         elevation={6}
         sx={{
+          zIndex: 1,
           padding: 4,
           borderRadius: 4,
           maxWidth: 600,
           width: '100%',
           textAlign: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(4px)',
         }}
       >
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12}>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#3f51b5' }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 'bold',
+                color: '#3f51b5',
+              }}
+            >
               What is Wavelet?
             </Typography>
           </Grid>
 
           <Grid item xs={12}>
             <Fade in timeout={500}>
-              <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.6 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: '1.1rem',
+                  color: '#444',
+                  lineHeight: 1.6,
+                }}
+              >
                 {page === pages.JOIN ? joinInfo() : createInfo()}
               </Typography>
             </Fade>
@@ -77,7 +128,7 @@ export default function Info() {
               aria-label="Toggle info page"
               sx={{
                 backgroundColor: '#3f51b5',
-                color: 'white',
+                color: '#fff',
                 '&:hover': {
                   backgroundColor: '#303f9f',
                 },
@@ -88,25 +139,26 @@ export default function Info() {
           </Grid>
 
           <Grid item xs={12}>
-            <Button
-              color="primary"
-              variant="contained"
-              component={Link}
-              to="/"
-              sx={{
-                borderRadius: 50,
-                paddingX: 4,
-                paddingY: 1.2,
-                fontWeight: 'bold',
-                textTransform: 'none',
-                backgroundColor: '#f50057',
-                '&:hover': {
-                  backgroundColor: '#c51162',
-                },
-              }}
-            >
-              ⬅ Back to Home
-            </Button>
+          <Button
+          fullWidth
+          variant="outlined"
+          component={Link}
+          to="/"
+          sx={{
+            fontWeight: 600,
+            fontSize: "0.95rem",
+            borderRadius: "10px",
+            color: "#555",
+            borderColor: "#ccc",
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: "rgba(255,255,255,0.05)",
+              borderColor: "#aaa",
+            },
+          }}
+        >
+          ← Back to Home
+        </Button>
           </Grid>
         </Grid>
       </Paper>

@@ -27,13 +27,11 @@ export default function RoomJoinPage() {
   };
 
   const roomButtonPressed = () => {
-    const requestOptions = {
+    fetch("/api/join-room", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code: roomCode }),
-    };
-
-    fetch("/api/join-room", requestOptions).then((response) => {
+    }).then((response) => {
       if (response.ok) {
         navigate(`/room/${roomCode}`);
       } else {
@@ -44,29 +42,60 @@ export default function RoomJoinPage() {
 
   return (
     <Box
-      sx={{
-        minHeight: "100vh",
-        background: "linear-gradient(to right, #2c3e50, #4ca1af)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        p: 2,
-      }}
-    >
+        sx={{
+          minHeight: "100vh",
+          background: `radial-gradient(circle at 30% 20%, rgba(173,216,230,0.4), transparent 50%), 
+                       radial-gradient(circle at 70% 80%, rgba(147,112,219,0.3), transparent 60%), 
+                       linear-gradient(to bottom right, #e3f2fd, #ede7f6)`,
+          position: "relative",
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          px: 2,
+        }}
+      >
+      <Box
+        sx={{
+          position: "absolute",
+          width: "400px",
+          height: "400px",
+          borderRadius: "50%",
+          background: "rgba(98,0,238,0.15)",
+          filter: "blur(100px)",
+          top: "10%",
+          left: "10%",
+          zIndex: 0,
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          width: "500px",
+          height: "500px",
+          borderRadius: "50%",
+          background: "rgba(33,150,243,0.1)",
+          filter: "blur(120px)",
+          bottom: "5%",
+          right: "5%",
+          zIndex: 0,
+        }}
+      />
+
+      {/* Content */}
       <Fade in={show} timeout={800}>
         <Paper
-          elevation={10}
+          elevation={12}
           sx={{
             p: 5,
             borderRadius: "25px",
-            maxWidth: 520,
+            maxWidth: 500,
             width: "100%",
-            textAlign: "center",
-            background: "rgba(255, 255, 255, 0.08)",
-            backdropFilter: "blur(15px)",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            boxShadow:
-              "0 15px 30px rgba(0, 0, 0, 0.3), inset 0 0 1px rgba(255, 255, 255, 0.3)",
+            zIndex: 1,
+            backdropFilter: "blur(20px)",
+            background: "rgba(255, 255, 255, 0.55)",
+            boxShadow: "0 15px 30px rgba(0,0,0,0.1)",
+            border: "1px solid rgba(255,255,255,0.3)",
           }}
         >
           <Grid
@@ -90,14 +119,13 @@ export default function RoomJoinPage() {
 
             <Grid item>
               <Typography
-                variant="h3"
-                component="h1"
+                variant="h4"
+                color="primary"
                 sx={{
                   fontWeight: 800,
-                  color: "#fff",
-                  textShadow: "1px 1px 10px rgba(0,0,0,0.4)",
-                  letterSpacing: "0.08em",
-                  userSelect: "none",
+                  color: "##1976d2",
+                  textShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 Join a Room
@@ -107,27 +135,24 @@ export default function RoomJoinPage() {
             <Grid item sx={{ width: "100%" }}>
               <TextField
                 required
-                label="Room Code"
-                placeholder="Enter Room Code"
-                variant="outlined"
                 fullWidth
+                variant="outlined"
+                label="Room Code"
                 value={roomCode}
                 onChange={handleTextFieldChange}
                 error={Boolean(error)}
                 helperText={error}
                 sx={{
-                  input: { color: "#fff", fontWeight: 600 },
-                  label: { color: "#ccc" },
-                  "& .MuiOutlinedInput-root": {
-                    backgroundColor: "rgba(255,255,255,0.1)",
+                  input: {
+                    fontWeight: 600,
+                    backgroundColor: "#fff",
                     borderRadius: "10px",
-                    "& fieldset": {
-                      borderColor: "#bbb",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#fff",
-                    },
                   },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#bbb" },
+                    "&:hover fieldset": { borderColor: "#764ba2" },
+                  },
+                  label: { fontWeight: 500, color: "#444" },
                 }}
               />
             </Grid>
@@ -137,19 +162,20 @@ export default function RoomJoinPage() {
                 <Grid item xs={12} sm={6}>
                   <Button
                     fullWidth
-                    color="primary"
                     variant="contained"
                     onClick={roomButtonPressed}
                     sx={{
-                      fontWeight: 700,
-                      fontSize: "1.05rem",
+                      fontWeight: 600,
                       py: 1.5,
-                      background: "linear-gradient(45deg, #43cea2, #185a9d)",
-                      borderRadius: "12px",
-                      transition: "all 0.3s ease-in-out",
+                      fontSize: "1rem",
+                      borderRadius: "10px",
+                      textTransform: "none",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                      backdropFilter: "blur(10px)",
                       "&:hover": {
-                        transform: "scale(1.05)",
-                        background: "linear-gradient(45deg, #30cfd0, #330867)",
+                        transform: "scale(1.02)",
+                        backgroundColor: "#1565c0",
+                        boxShadow: "0 8px 18px rgba(0,0,0,0.15)",
                       },
                     }}
                   >
@@ -160,20 +186,19 @@ export default function RoomJoinPage() {
                 <Grid item xs={12} sm={6}>
                   <Button
                     fullWidth
-                    variant="outlined"
                     component={Link}
                     to="/"
+                    variant="outlined"
                     sx={{
                       fontWeight: 600,
                       fontSize: "0.95rem",
-                      borderRadius: "12px",
-                      color: "#ffffff",
-                      borderColor: "#ffffff",
-                      mt: { xs: 2, sm: 0 },
+                      borderRadius: "10px",
+                      color: "#555",
+                      borderColor: "#ccc",
+                      textTransform: "none",
                       "&:hover": {
-                        backgroundColor: "rgba(255,255,255,0.1)",
-                        borderColor: "#ddd",
-                        color: "#ddd",
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                        borderColor: "#aaa",
                       },
                     }}
                   >
