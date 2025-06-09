@@ -6,45 +6,16 @@ import {
   Box,
   Paper,
   keyframes,
+  Alert,
+  Collapse,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
 
-// Keyframes for background gradient animation
-const gradientAnimation = keyframes`
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
-`;
-
-// Fade in animation for Paper components
 const fadeIn = keyframes`
   from {opacity: 0; transform: translateY(20px);}
   to {opacity: 1; transform: translateY(0);}
-`;
-
-// Glow animation for buttons
-const glow = keyframes`
-  0%, 100% {
-    box-shadow: 0 0 8px 2px rgba(33, 150, 243, 0.6);
-  }
-  50% {
-    box-shadow: 0 0 16px 6px rgba(33, 150, 243, 1);
-  }
-`;
-
-// Pulse/wave animation for music player container and update room
-const wave = keyframes`
-  0% {
-    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
-  }
-  50% {
-    box-shadow: 0 0 20px 10px rgba(33, 150, 243, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
-  }
 `;
 
 export default function Room({ leaveRoomCallback }) {
@@ -57,6 +28,7 @@ export default function Room({ leaveRoomCallback }) {
   const [showSettings, setShowSettings] = useState(false);
   const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
   const [song, setSong] = useState({});
+  const [error, setError] = useState("");
 
   useEffect(() => {
     getRoomDetails();
@@ -82,28 +54,28 @@ export default function Room({ leaveRoomCallback }) {
         setIsHost(data.is_host);
         if (data.is_host) authenticateSpotify();
       })
-      .catch((error) => console.error("Failed to fetch room details:", error));
+      .catch(() => setError("Failed to fetch room details"));
   };
 
   const authenticateSpotify = () => {
     fetch("/spotify/is-authenticated")
-      .then((response) => response.json())
+      .then((res) => res.json())
       .then((data) => {
         setSpotifyAuthenticated(data.status);
         if (!data.status) {
           fetch("/spotify/get-auth-url")
-            .then((response) => response.json())
+            .then((res) => res.json())
             .then((data) => window.location.replace(data.url));
         }
       })
-      .catch((err) => console.error("Spotify auth error:", err));
+      .catch(() => setError("Spotify authentication failed"));
   };
 
   const getCurrentSong = () => {
     fetch("/spotify/current-song")
       .then((response) => (response.ok ? response.json() : {}))
       .then((data) => setSong(data))
-      .catch((err) => console.error("Failed to get current song:", err));
+      .catch(() => setError("Failed to fetch current song"));
   };
 
   const leaveButtonPressed = () => {
@@ -118,205 +90,203 @@ export default function Room({ leaveRoomCallback }) {
 
   const renderSettings = () => (
     <Box
-      minHeight="100vh"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      px={2}
       sx={{
-        background:
-          "linear-gradient(270deg, #232526, #414345, #232526, #414345)",
-        backgroundSize: "800% 800%",
-        animation: `${gradientAnimation} 20s ease infinite`,
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        px: 2,
+        background: `radial-gradient(circle at 30% 20%, rgba(173,216,230,0.4), transparent 50%), 
+                     radial-gradient(circle at 70% 80%, rgba(147,112,219,0.3), transparent 60%), 
+                     linear-gradient(to bottom right, #e3f2fd, #ede7f6)`,
+        position: "relative",
       }}
     >
-      <Paper
-        elevation={8}
+      <Box
         sx={{
-          p: 4,
-          borderRadius: 4,
-          width: "100%",
+          position: "absolute",
+          width: "400px",
+          height: "400px",
+          borderRadius: "50%",
+          background: "rgba(98,0,238,0.15)",
+          filter: "blur(100px)",
+          top: "10%",
+          left: "10%",
+          zIndex: 0,
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          width: "500px",
+          height: "500px",
+          borderRadius: "50%",
+          background: "rgba(33,150,243,0.1)",
+          filter: "blur(120px)",
+          bottom: "5%",
+          right: "5%",
+          zIndex: 0,
+        }}
+      />
+      <Paper
+        elevation={12}
+        sx={{
+          p: 5,
+          borderRadius: "25px",
           maxWidth: 600,
-          background: "rgba(255, 255, 255, 0.85)",
-          backdropFilter: "blur(12px)",
-          boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
-          animation: `${fadeIn} 0.8s ease forwards`,
+          width: "100%",
+          zIndex: 1,
+          backdropFilter: "blur(20px)",
+          background: "rgba(255, 255, 255, 0.55)",
+          boxShadow: "0 15px 30px rgba(0,0,0,0.1)",
+          border: "1px solid rgba(255,255,255,0.3)",
         }}
       >
-        <Box textAlign="center" mb={3}>
-          <Typography
-            variant="h5"
-            fontWeight="bold"
-            sx={{
-              background: "linear-gradient(to right, #141E30, #243B55)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+        <CreateRoomPage
+          update
+          votesToSkip={votesToSkip}
+          guestCanPause={guestCanPause}
+          roomCode={roomCode}
+          updateCallback={getRoomDetails}
+        />
+        <Box mt={3}>
+          <Button
+            fullWidth
+            variant="outlined"
+            color="secondary"
+            onClick={() => setShowSettings(false)}
           >
-            Update Room Settings
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Modify your room preferences below
-          </Typography>
+            Close
+          </Button>
         </Box>
-
-        {/* Add wave animation around CreateRoomPage */}
-        <Box
-          sx={{
-            borderRadius: 3,
-            animation: `${wave} 2.5s infinite`,
-            boxShadow: "0 0 20px 4px rgba(33, 150, 243, 0.7)",
-            p: 2,
-          }}
-        >
-          <CreateRoomPage
-            update
-            votesToSkip={votesToSkip}
-            guestCanPause={guestCanPause}
-            roomCode={roomCode}
-            updateCallback={() => {
-              getRoomDetails();
-              setShowSettings(false);
-            }}
-          />
-        </Box>
-
-        <Grid container justifyContent="center" mt={3}>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => setShowSettings(false)}
-              sx={{
-                px: 4,
-                py: 1.2,
-                borderRadius: 2,
-                fontWeight: "bold",
-                textTransform: "none",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  backgroundColor: "#d32f2f",
-                  boxShadow: "0 0 12px 3px rgba(211,47,47,0.8)",
-                },
-              }}
-            >
-              Close Settings
-            </Button>
-          </Grid>
-        </Grid>
       </Paper>
     </Box>
   );
 
-  if (showSettings) return renderSettings();
-
-  return (
+  return showSettings ? (
+    renderSettings()
+  ) : (
     <Box
-      minHeight="100vh"
-      px={2}
-      py={4}
       sx={{
-        background:
-          "linear-gradient(270deg, #141E30, #243B55, #141E30, #243B55)",
-        backgroundSize: "800% 800%",
-        animation: `${gradientAnimation} 30s ease infinite`,
+        minHeight: "100vh",
+        background: `radial-gradient(circle at 30% 20%, rgba(173,216,230,0.4), transparent 50%), 
+                     radial-gradient(circle at 70% 80%, rgba(147,112,219,0.3), transparent 60%), 
+                     linear-gradient(to bottom right, #e3f2fd, #ede7f6)`,
+        position: "relative",
+        overflow: "hidden",
         display: "flex",
-        justifyContent: "center",
         alignItems: "center",
+        justifyContent: "center",
+        px: 2,
       }}
     >
-      <Paper
-        elevation={6}
+      <Box
         sx={{
-          p: 4,
-          borderRadius: 4,
-          width: "100%",
+          position: "absolute",
+          width: "400px",
+          height: "400px",
+          borderRadius: "50%",
+          background: "rgba(98,0,238,0.15)",
+          filter: "blur(100px)",
+          top: "10%",
+          left: "10%",
+          zIndex: 0,
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          width: "500px",
+          height: "500px",
+          borderRadius: "50%",
+          background: "rgba(33,150,243,0.1)",
+          filter: "blur(120px)",
+          bottom: "5%",
+          right: "5%",
+          zIndex: 0,
+        }}
+      />
+      {/* Main Content */}
+      <Paper
+        elevation={12}
+        sx={{
+          p: 5,
+          borderRadius: "25px",
           maxWidth: 600,
-          backgroundColor: "rgba(255,255,255,0.85)",
-          backdropFilter: "blur(12px)",
+          width: "100%",
+          zIndex: 1,
+          backdropFilter: "blur(20px)",
+          background: "rgba(255, 255, 255, 0.55)",
+          boxShadow: "0 15px 30px rgba(0,0,0,0.1)",
+          border: "1px solid rgba(255,255,255,0.3)",
           textAlign: "center",
-          animation: `${fadeIn} 1s ease forwards`,
-          boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
+          animation: `${fadeIn} 0.8s ease-out`,
         }}
       >
+        <Collapse in={Boolean(error)}>
+          <Alert severity="error" onClose={() => setError("")} sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        </Collapse>
+
         <Typography
           variant="h4"
-          gutterBottom
-          fontWeight="bold"
           sx={{
-            mb: 3,
-            color: "#141E30",
-            textShadow: "0 0 5px rgba(33, 150, 243, 0.8)",
-            letterSpacing: 2,
-            userSelect: "none",
+            fontWeight: 800,
+            color: "#1976d2",
+            textShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            fontFamily: "Poppins, sans-serif",
+            mb: 2,
           }}
         >
           Room Code: {roomCode}
         </Typography>
 
-        {/* Wave animation around MusicPlayer */}
-        <Box
-          my={3}
-          sx={{
-            borderRadius: 4,
-            p: 2,
-            position: "relative",
-            animation: `${wave} 2.5s infinite`,
-            boxShadow: "0 0 20px 4px rgba(33, 150, 243, 0.7)",
-            transition: "all 0.5s ease",
-          }}
-        >
-          <MusicPlayer {...song} />
-        </Box>
+        <MusicPlayer {...song} />
 
-        {isHost && (
-          <Box my={2}>
+        <Grid container spacing={2} sx={{ mt: 4 }}>
+          {isHost && (
+            <Grid item xs={12} sm={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={() => setShowSettings(true)}
+                sx={{
+                  fontWeight: 600,
+                  py: 1.5,
+                  fontSize: "1rem",
+                  borderRadius: "10px",
+                  textTransform: "none",
+                  boxShadow: "0 4px 12px rgba(33,150,243,0.3)",
+                }}
+              >
+                Settings
+              </Button>
+            </Grid>
+          )}
+          <Grid item xs={12} sm={isHost ? 6 : 12}>
             <Button
               fullWidth
-              variant="contained"
-              color="primary"
-              onClick={() => setShowSettings(true)}
+              variant="outlined"
+              color="error"
+              onClick={leaveButtonPressed}
               sx={{
-                fontWeight: "bold",
+                fontWeight: 600,
+                fontSize: "0.95rem",
+                borderRadius: "10px",
+                color: "#555",
+                borderColor: "#ccc",
                 textTransform: "none",
-                px: 3,
-                py: 1.2,
-                borderRadius: 3,
-                animation: `${glow} 3s ease-in-out infinite`,
-                boxShadow: "0 0 12px rgba(33, 150, 243, 0.7)",
                 "&:hover": {
-                  boxShadow:
-                    "0 0 24px 8px rgba(33, 150, 243, 1), 0 0 8px 2px rgba(33,150,243,0.9)",
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  borderColor: "#aaa",
                 },
               }}
             >
-              Room Settings
+              ← Leave Room
             </Button>
-          </Box>
-        )}
-
-        <Box mt={2}>
-          <Button
-            fullWidth
-            variant="contained"
-            color="secondary"
-            onClick={leaveButtonPressed}
-            sx={{
-              fontWeight: "bold",
-              textTransform: "none",
-              px: 3,
-              py: 1.2,
-              borderRadius: 3,
-              transition: "all 0.3s ease",
-              "&:hover": {
-                backgroundColor: "#c51162",
-                boxShadow: "0 0 15px 5px rgba(197,17,98,0.8)",
-              },
-            }}
-          >
-            Leave Room
-          </Button>
-        </Box>
+          </Grid>
+        </Grid>
       </Paper>
     </Box>
   );
