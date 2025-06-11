@@ -14,7 +14,6 @@ jsonpatch==1.32
 jsonpointer==2.0
 jsonschema==4.10.3
 keyring==24.2.0
-language-selector==0.1
 launchpadlib==1.11.0
 louis==3.26.0
 mediapipe==0.10.15
