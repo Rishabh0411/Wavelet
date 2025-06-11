@@ -15,7 +15,6 @@ jsonpointer==2.0
 jsonschema==4.10.3
 keyring==24.2.0
 launchpadlib==1.11.0
-louis==3.26.0
 mediapipe==0.10.15
 mercurial==6.4.4
 netifaces==0.11.0
