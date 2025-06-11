@@ -3,7 +3,6 @@ black==24.4.2
 blinker==1.6.2
 bs4==0.0.2
 colorama==0.4.6
-command-not-found==0.3
 configobj==5.0.8
 cryptography==38.0.4
 defer==1.0.6
@@ -34,8 +33,6 @@ pygame-ce==2.5.1
 pygobject==3.46.0
 pyjwt==2.7.0
 pyserial==3.5
-pytesseract==0.3.10
-pytest==7.4.0
 python-apt==2.6.0+ubuntu1
 python-debian==0.1.49+ubuntu2
 pytmx==3.32
