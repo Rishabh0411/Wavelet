@@ -7,8 +7,9 @@ module.exports = (env, argv) => {
     return {
         entry: './src/index.js',
         output: {
-            path: path.resolve(__dirname, '../frontend/static/frontend'),
-            filename: '[name].js', 
+            path: path.resolve(__dirname, 'static/frontend'),
+            filename: 'main.js',  // explicit
+            publicPath: '/static/frontend/',  // helps with asset resolution if needed
         },
         module: {
             rules: [
@@ -22,7 +23,7 @@ module.exports = (env, argv) => {
             ],
         },
         optimization: {
-            minimize: isProduction, 
+            minimize: isProduction,
         },
         plugins: [
             new webpack.DefinePlugin({
