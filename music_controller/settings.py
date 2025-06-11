@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-_l-pus&539ry6*@jsx%dft441k2rj*c+_fis+bg8%5_*#kqx2f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', 'wavelet-79as.onrender.com']
 
 
 # Application definition
