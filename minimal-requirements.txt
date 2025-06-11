@@ -5,6 +5,7 @@ cryptography==38.0.4
 django-cors-headers==4.7.0
 django-extensions==4.1
 djangorestframework==3.16.0
+gunicorn
 jsonschema==4.10.3
 keyring==24.2.0
 mercurial==6.4.4
