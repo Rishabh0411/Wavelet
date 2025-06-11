@@ -15,7 +15,6 @@ click==8.1.6
 cloudpickle==3.0.0
 colorama==0.4.6
 comm==0.2.2
-command-not-found==0.3
 configobj==5.0.8
 contourpy==1.2.1
 cryptography==38.0.4
