@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development --watch",
-    "build": "webpack --mode production"
+    "build": "vite build"
   },
   "keywords": [],
   "author": "",
