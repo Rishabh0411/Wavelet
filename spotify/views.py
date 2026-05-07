@@ -12,11 +12,13 @@ from .models import Vote
 class AuthURL(APIView):
     def get(self, request, fornat=None):
         scopes = 'user-read-playback-state user-modify-playback-state user-read-currently-playing'
+        redirect_uri = REDIRECT_URI or request.build_absolute_uri('/spotify/redirect')
+        request.session['spotify_redirect_uri'] = redirect_uri
 
         url = Request('GET', 'https://accounts.spotify.com/authorize', params={
             'scope': scopes,
             'response_type': 'code',
-            'redirect_uri': REDIRECT_URI,
+            'redirect_uri': redirect_uri,
             'client_id': CLIENT_ID
         }).prepare().url
 
@@ -26,11 +28,15 @@ class AuthURL(APIView):
 def spotify_callback(request, format=None):
     code = request.GET.get('code')
     error = request.GET.get('error')
+    redirect_uri = request.session.get('spotify_redirect_uri') or REDIRECT_URI or request.build_absolute_uri('/spotify/redirect')
+
+    if error:
+        return Response({'error': error}, status=status.HTTP_400_BAD_REQUEST)
 
     response = post('https://accounts.spotify.com/api/token', data={
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': REDIRECT_URI,
+        'redirect_uri': redirect_uri,
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET
     }).json()

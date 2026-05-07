@@ -248,13 +248,14 @@ export default function CreateRoomPage(props) {
             </Grid>
 
             <Grid item sx={{ width: "100%" }}>
-              <FormControl fullWidth>
-                <FormHelperText>
-                  <Typography
-                    align="center"
-                    variant="body2"
-                    color="text.secondary"
-                  >
+                <FormControl fullWidth>
+                  <FormHelperText>
+                    <Typography
+                      component="span"
+                      align="center"
+                      variant="body2"
+                      color="text.secondary"
+                    >
                     Guest Control of Playback State
                   </Typography>
                 </FormHelperText>
@@ -295,6 +296,7 @@ export default function CreateRoomPage(props) {
                 />
                 <FormHelperText>
                   <Typography
+                    component="span"
                     align="center"
                     variant="body2"
                     color="text.secondary"
