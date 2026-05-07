@@ -14,6 +14,9 @@ import PauseIcon from "@mui/icons-material/Pause";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 
+const LOCAL_FALLBACK_COVER =
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><rect width='100%25' height='100%25' fill='%23eceff1'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23607075' font-family='Arial' font-size='14'>No Cover</text></svg>";
+
 const MusicPlayer = ({
   title = "Unknown Title",
   artist = "Unknown Artist",
@@ -48,7 +51,7 @@ const MusicPlayer = ({
           <CardMedia
             component="img"
             sx={{ width: 150, height: 150, borderRadius: 2 }}
-            image={image_url || "https://via.placeholder.com/150"}
+            image={image_url || LOCAL_FALLBACK_COVER}
             alt={`${title} album cover`}
           />
         </Grid>
@@ -58,7 +61,7 @@ const MusicPlayer = ({
             <Typography variant="h5" noWrap>{title}</Typography>
             <Typography variant="subtitle1" color="text.secondary" noWrap>
               {artist}
-            </Typography>3
+            </Typography>
 
             <Box mt={2} display="flex" justifyContent="center" alignItems="center" gap={2}>
               <IconButton onClick={skipSong} aria-label="Previous">
