@@ -3,6 +3,21 @@
 from django.db import migrations, models
 
 
+def preconvert_expires_in_for_postgres(apps, schema_editor):
+    if schema_editor.connection.vendor != "postgresql":
+        return
+
+    spotify_token_table = apps.get_model("spotify", "SpotifyToken")._meta.db_table
+    schema_editor.execute(
+        f"""
+        ALTER TABLE "{spotify_token_table}"
+        ALTER COLUMN "expires_in"
+        TYPE timestamp with time zone
+        USING (NOW() + ("expires_in" * INTERVAL '1 second'))
+        """
+    )
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,6 +25,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(
+            code=preconvert_expires_in_for_postgres,
+            reverse_code=migrations.RunPython.noop,
+        ),
         migrations.AlterField(
             model_name="spotifytoken",
             name="expires_in",
