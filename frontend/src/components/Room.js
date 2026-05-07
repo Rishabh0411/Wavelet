@@ -73,8 +73,19 @@ export default function Room({ leaveRoomCallback }) {
 
   const getCurrentSong = () => {
     fetch("/spotify/current-song")
-      .then((response) => (response.ok ? response.json() : {}))
-      .then((data) => setSong(data))
+      .then(async (response) => {
+        if (response.status === 204) {
+          return {};
+        }
+        if (!response.ok) {
+          throw new Error("Failed to fetch current song");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setSong(data || {});
+        setError("");
+      })
       .catch(() => setError("Failed to fetch current song"));
   };
 

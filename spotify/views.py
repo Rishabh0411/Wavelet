@@ -69,7 +69,13 @@ class CurrentSong(APIView):
         endpoint = "player/currently-playing"
         response = execute_spotify_api_request(host, endpoint)
 
-        if 'error' in response or 'item' not in response:
+        if (
+            not isinstance(response, dict)
+            or "error" in response
+            or "Error" in response
+            or "item" not in response
+            or response.get("item") is None
+        ):
             return Response({}, status=status.HTTP_204_NO_CONTENT)
 
         item = response.get('item')
