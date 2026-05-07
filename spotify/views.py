@@ -64,13 +64,26 @@ class IsAuthenticated(APIView):
 
 
 class CurrentSong(APIView):
+    def _empty_song_payload(self, room=None):
+        return {
+            'title': 'Unknown Title',
+            'artist': 'Unknown Artist',
+            'duration': 1,
+            'time': 0,
+            'image_url': "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><rect width='100%25' height='100%25' fill='%23eceff1'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23607075' font-family='Arial' font-size='14'>No Cover</text></svg>",
+            'is_playing': False,
+            'votes': 0,
+            'votes_required': room.votes_to_skip if room else 0,
+            'id': '',
+        }
+
     def get(self, request, format=None):
         room_code = self.request.session.get('room_code')
         room = Room.objects.filter(code=room_code)
         if room.exists():
             room = room[0]
         else:
-            return Response({}, status=status.HTTP_404_NOT_FOUND)
+            return Response(self._empty_song_payload(), status=status.HTTP_200_OK)
         host = room.host
         endpoint = "player/currently-playing"
         response = execute_spotify_api_request(host, endpoint)
@@ -82,7 +95,7 @@ class CurrentSong(APIView):
             or "item" not in response
             or response.get("item") is None
         ):
-            return Response({}, status=status.HTTP_204_NO_CONTENT)
+            return Response(self._empty_song_payload(room), status=status.HTTP_200_OK)
 
         item = response.get('item')
         duration = item.get('duration_ms')
