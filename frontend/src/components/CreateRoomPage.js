@@ -17,6 +17,17 @@ import {
   Grow,
 } from "@mui/material";
 import { useNavigate, Link } from "react-router-dom";
+import {
+  pageShellSx,
+  orbOneSx,
+  orbTwoSx,
+  glassCardSx,
+  titleSx,
+  subtitleSx,
+  primaryButtonSx,
+  outlineButtonSx,
+  subtleTextFieldSx,
+} from "./uiStyles";
 
 export default function CreateRoomPage(props) {
   const {
@@ -25,6 +36,8 @@ export default function CreateRoomPage(props) {
     update = false,
     roomCode = null,
     updateCallback = () => {},
+    onBack = null,
+    embedded = false,
   } = props;
 
   const [guestCanPauseState, setGuestCanPause] = useState(guestCanPause);
@@ -95,7 +108,7 @@ export default function CreateRoomPage(props) {
   };
 
   const renderButtons = () => (
-    <Grid container spacing={2} justifyContent="center">
+      <Grid container spacing={2} justifyContent="center">
       <Grid item xs={12} sm={6}>
         <Button
           fullWidth
@@ -104,105 +117,59 @@ export default function CreateRoomPage(props) {
           onClick={update ? handleUpdateButtonPressed : handleRoomButtonPressed}
           disabled={votesToSkipState < 1}
           sx={{
-            fontWeight: 600,
-            py: 1.5,
+            ...primaryButtonSx,
             fontSize: "1rem",
-            borderRadius: "10px",
-            textTransform: "none",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            backdropFilter: "blur(10px)",
-            "&:hover": {
-              transform: "scale(1.02)",
-              backgroundColor: "#1565c0",
-              boxShadow: "0 8px 18px rgba(0,0,0,0.15)",
-            },
           }}
         >
           {update ? "Update Room" : "Create Room"}
         </Button>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Button
-          fullWidth
-          variant="outlined"
-          component={Link}
-          to="/"
-          sx={{
-            fontWeight: 600,
-            fontSize: "0.95rem",
-            borderRadius: "10px",
-            color: "#555",
-            borderColor: "#ccc",
-            textTransform: "none",
-            "&:hover": {
-              backgroundColor: "rgba(255,255,255,0.05)",
-              borderColor: "#aaa",
-            },
-          }}
-        >
-          ← Back to Home
-        </Button>
+        {update ? (
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => {
+              if (onBack) {
+                onBack();
+                return;
+              }
+              navigate(`/room/${roomCode}`);
+            }}
+            sx={{
+              ...outlineButtonSx,
+            }}
+          >
+            ← Back
+          </Button>
+        ) : (
+          <Button
+            fullWidth
+            variant="outlined"
+            component={Link}
+            to="/"
+            sx={{
+              ...outlineButtonSx,
+            }}
+          >
+            ← Back to Home
+          </Button>
+        )}
       </Grid>
     </Grid>
   );
 
-  return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        background: "radial-gradient(circle at 30% 20%, rgba(173,216,230,0.4), transparent 50%), radial-gradient(circle at 70% 80%, rgba(147,112,219,0.3), transparent 60%), linear-gradient(to bottom right, #e3f2fd, #ede7f6)",
-        position: "relative",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        px: 2,
-      }}
-    >
-      {/* Decorative Blobs */}
-      <Box
+  const cardContent = (
+    <Grow in={show} timeout={800}>
+      <Paper
+        elevation={6}
         sx={{
-          position: "absolute",
-          width: "400px",
-          height: "400px",
-          borderRadius: "50%",
-          background: "rgba(98,0,238,0.15)",
-          filter: "blur(100px)",
-          top: "10%",
-          left: "10%",
-          zIndex: 0,
+          ...glassCardSx,
+          p: 5,
+          textAlign: "center",
+          maxWidth: 520,
         }}
-      />
-      <Box
-        sx={{
-          position: "absolute",
-          width: "500px",
-          height: "500px",
-          borderRadius: "50%",
-          background: "rgba(33,150,243,0.1)",
-          filter: "blur(120px)",
-          bottom: "5%",
-          right: "5%",
-          zIndex: 0,
-        }}
-      />
-
-      <Grow in={show} timeout={800}>
-        <Paper
-          elevation={6}
-          sx={{
-            padding: 5,
-            borderRadius: "24px",
-            textAlign: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.65)",
-            backdropFilter: "blur(12px)",
-            color: "#333",
-            maxWidth: 520,
-            width: "100%",
-            zIndex: 1,
-            boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
-          }}
-        >
+      >
           <Grid
             container
             spacing={4}
@@ -238,12 +205,13 @@ export default function CreateRoomPage(props) {
                 variant="h4"
                 component="h1"
                 sx={{
-                  fontWeight: 800,
-                  color: "#1976d2",
-                  letterSpacing: "0.04em",
+                  ...titleSx,
                 }}
               >
                 {update ? "Update Room" : "Create a Room"}
+              </Typography>
+              <Typography variant="body2" sx={{ ...subtitleSx, mt: 1 }}>
+                Tune permissions and vote rules for your listening session.
               </Typography>
             </Grid>
 
@@ -253,9 +221,9 @@ export default function CreateRoomPage(props) {
                     <Typography
                       component="span"
                       align="center"
-                      variant="body2"
-                      color="text.secondary"
-                    >
+                    variant="body2"
+                    color="inherit"
+                  >
                     Guest Control of Playback State
                   </Typography>
                 </FormHelperText>
@@ -293,13 +261,14 @@ export default function CreateRoomPage(props) {
                   onChange={handleVotesChange}
                   inputProps={{ min: 1 }}
                   variant="outlined"
+                  sx={subtleTextFieldSx}
                 />
                 <FormHelperText>
                   <Typography
                     component="span"
                     align="center"
                     variant="body2"
-                    color="text.secondary"
+                    color="inherit"
                   >
                     Number of votes required to skip a song
                   </Typography>
@@ -309,8 +278,19 @@ export default function CreateRoomPage(props) {
 
             <Grid item sx={{ width: "100%" }}>{renderButtons()}</Grid>
           </Grid>
-        </Paper>
-      </Grow>
+      </Paper>
+    </Grow>
+  );
+
+  if (embedded) {
+    return cardContent;
+  }
+
+  return (
+    <Box sx={pageShellSx}>
+      <Box sx={orbOneSx} />
+      <Box sx={orbTwoSx} />
+      {cardContent}
     </Box>
   );
 }

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "proxy": "http://127.0.0.1:8000",
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",

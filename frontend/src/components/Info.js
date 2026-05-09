@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Grid,
   Typography,
@@ -11,6 +11,15 @@ import {
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Link } from 'react-router-dom';
+import {
+  pageShellSx,
+  orbOneSx,
+  orbTwoSx,
+  glassCardSx,
+  titleSx,
+  subtitleSx,
+  outlineButtonSx,
+} from "./uiStyles";
 
 const pages = {
   JOIN: 'join',
@@ -21,16 +30,9 @@ export default function Info() {
   const [page, setPage] = useState(pages.JOIN);
 
   const joinInfo = () =>
-    '🎧 Join a room to listen to music with others in real-time. Enjoy synced playback, chat, and good vibes!';
+    'Jump into a room and enjoy synced playback with your crew. Everyone stays on the same beat while voting to skip.';
   const createInfo = () =>
-    '🎶 Create your own music room and take control. Share your taste, host parties, or just chill!';
-
-  useEffect(() => {
-    console.log('Info component mounted');
-    return () => {
-      console.log('Info component unmounted');
-    };
-  }, []);
+    'Create your own room, connect Spotify as host, and set playback permissions with vote rules for a smooth shared session.';
 
   const togglePage = () => {
     setPage((prevPage) =>
@@ -40,58 +42,18 @@ export default function Info() {
 
   return (
     <Box
-      sx={{
-        position: 'relative',
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #e0e7ff, #f3e8ff)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        px: 2,
-        overflow: 'hidden',
-      }}
+      sx={pageShellSx}
     >
-      {/* Blob 1 */}
-      <Box
-        sx={{
-          position: 'absolute',
-          width: 300,
-          height: 300,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle at 30% 30%, #a5b4fc, #818cf8)',
-          filter: 'blur(100px)',
-          top: '-50px',
-          left: '-80px',
-          zIndex: 0,
-        }}
-      />
-
-      {/* Blob 2 */}
-      <Box
-        sx={{
-          position: 'absolute',
-          width: 250,
-          height: 250,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle at 70% 70%, #f3e8ff, #d8b4fe)',
-          filter: 'blur(100px)',
-          bottom: '-60px',
-          right: '-60px',
-          zIndex: 0,
-        }}
-      />
+      <Box sx={orbOneSx} />
+      <Box sx={orbTwoSx} />
 
       <Paper
         elevation={6}
         sx={{
-          zIndex: 1,
-          padding: 4,
-          borderRadius: 4,
+          ...glassCardSx,
+          p: 4,
           maxWidth: 600,
-          width: '100%',
           textAlign: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(4px)',
         }}
       >
         <Grid container spacing={3} justifyContent="center">
@@ -99,11 +61,13 @@ export default function Info() {
             <Typography
               variant="h4"
               sx={{
-                fontWeight: 'bold',
-                color: '#3f51b5',
+                ...titleSx,
               }}
             >
-              What is Wavelet?
+              About Wavelet
+            </Typography>
+            <Typography variant="body2" sx={{ ...subtitleSx, mt: 1 }}>
+              Built for collaborative listening with a music-first experience.
             </Typography>
           </Grid>
 
@@ -111,12 +75,12 @@ export default function Info() {
             <Fade in timeout={500}>
               <Typography
                 variant="body1"
-                sx={{
-                  fontSize: '1.1rem',
-                  color: '#444',
-                  lineHeight: 1.6,
-                }}
-              >
+                  sx={{
+                    fontSize: '1.1rem',
+                    color: 'rgba(229, 231, 235, 0.88)',
+                    lineHeight: 1.6,
+                  }}
+                >
                 {page === pages.JOIN ? joinInfo() : createInfo()}
               </Typography>
             </Fade>
@@ -127,10 +91,12 @@ export default function Info() {
               onClick={togglePage}
               aria-label="Toggle info page"
               sx={{
-                backgroundColor: '#3f51b5',
+                background:
+                  'linear-gradient(90deg, rgba(255,77,166,0.95) 0%, rgba(124,77,255,0.95) 100%)',
                 color: '#fff',
                 '&:hover': {
-                  backgroundColor: '#303f9f',
+                  background:
+                    'linear-gradient(90deg, rgba(255,45,149,1) 0%, rgba(111,60,255,1) 100%)',
                 },
               }}
             >
@@ -143,21 +109,12 @@ export default function Info() {
           fullWidth
           variant="outlined"
           component={Link}
-          to="/"
-          sx={{
-            fontWeight: 600,
-            fontSize: "0.95rem",
-            borderRadius: "10px",
-            color: "#555",
-            borderColor: "#ccc",
-            textTransform: "none",
-            "&:hover": {
-              backgroundColor: "rgba(255,255,255,0.05)",
-              borderColor: "#aaa",
-            },
-          }}
-        >
-          ← Back to Home
+           to="/"
+           sx={{
+            ...outlineButtonSx,
+           }}
+         >
+           ← Back to Home
         </Button>
           </Grid>
         </Grid>

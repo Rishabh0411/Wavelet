@@ -5,18 +5,21 @@ import {
   Typography,
   Box,
   Paper,
-  keyframes,
   Alert,
   Collapse,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
-
-const fadeIn = keyframes`
-  from {opacity: 0; transform: translateY(20px);}
-  to {opacity: 1; transform: translateY(0);}
-`;
+import {
+  pageShellSx,
+  orbOneSx,
+  orbTwoSx,
+  glassCardSx,
+  titleSx,
+  primaryButtonSx,
+  outlineButtonSx,
+} from "./uiStyles";
 
 export default function Room({ leaveRoomCallback }) {
   const { roomCode } = useParams();
@@ -105,139 +108,30 @@ export default function Room({ leaveRoomCallback }) {
     });
   };
 
-  const renderSettings = () => (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        px: 2,
-        background: `radial-gradient(circle at 30% 20%, rgba(173,216,230,0.4), transparent 50%), 
-                     radial-gradient(circle at 70% 80%, rgba(147,112,219,0.3), transparent 60%), 
-                     linear-gradient(to bottom right, #e3f2fd, #ede7f6)`,
-        position: "relative",
-      }}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          width: "400px",
-          height: "400px",
-          borderRadius: "50%",
-          background: "rgba(98,0,238,0.15)",
-          filter: "blur(100px)",
-          top: "10%",
-          left: "10%",
-          zIndex: 0,
-        }}
+  if (showSettings) {
+    return (
+      <CreateRoomPage
+        update
+        votesToSkip={votesToSkip}
+        guestCanPause={guestCanPause}
+        roomCode={roomCode}
+        updateCallback={getRoomDetails}
+        onBack={() => setShowSettings(false)}
       />
-      <Box
-        sx={{
-          position: "absolute",
-          width: "500px",
-          height: "500px",
-          borderRadius: "50%",
-          background: "rgba(33,150,243,0.1)",
-          filter: "blur(120px)",
-          bottom: "5%",
-          right: "5%",
-          zIndex: 0,
-        }}
-      />
-      <Paper
-        elevation={12}
-        sx={{
-          p: 5,
-          borderRadius: "25px",
-          maxWidth: 600,
-          width: "100%",
-          zIndex: 1,
-          backdropFilter: "blur(20px)",
-          background: "rgba(255, 255, 255, 0.55)",
-          boxShadow: "0 15px 30px rgba(0,0,0,0.1)",
-          border: "1px solid rgba(255,255,255,0.3)",
-        }}
-      >
-        <CreateRoomPage
-          update
-          votesToSkip={votesToSkip}
-          guestCanPause={guestCanPause}
-          roomCode={roomCode}
-          updateCallback={getRoomDetails}
-        />
-        <Box mt={3}>
-          <Button
-            fullWidth
-            variant="outlined"
-            color="secondary"
-            onClick={() => setShowSettings(false)}
-          >
-            Close
-          </Button>
-        </Box>
-      </Paper>
-    </Box>
-  );
+    );
+  }
 
-  return showSettings ? (
-    renderSettings()
-  ) : (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        background: `radial-gradient(circle at 30% 20%, rgba(173,216,230,0.4), transparent 50%), 
-                     radial-gradient(circle at 70% 80%, rgba(147,112,219,0.3), transparent 60%), 
-                     linear-gradient(to bottom right, #e3f2fd, #ede7f6)`,
-        position: "relative",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        px: 2,
-      }}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          width: "400px",
-          height: "400px",
-          borderRadius: "50%",
-          background: "rgba(98,0,238,0.15)",
-          filter: "blur(100px)",
-          top: "10%",
-          left: "10%",
-          zIndex: 0,
-        }}
-      />
-      <Box
-        sx={{
-          position: "absolute",
-          width: "500px",
-          height: "500px",
-          borderRadius: "50%",
-          background: "rgba(33,150,243,0.1)",
-          filter: "blur(120px)",
-          bottom: "5%",
-          right: "5%",
-          zIndex: 0,
-        }}
-      />
-      {/* Main Content */}
+  return (
+    <Box sx={pageShellSx}>
+      <Box sx={orbOneSx} />
+      <Box sx={orbTwoSx} />
       <Paper
         elevation={12}
         sx={{
+          ...glassCardSx,
           p: 5,
-          borderRadius: "25px",
-          maxWidth: 600,
-          width: "100%",
-          zIndex: 1,
-          backdropFilter: "blur(20px)",
-          background: "rgba(255, 255, 255, 0.55)",
-          boxShadow: "0 15px 30px rgba(0,0,0,0.1)",
-          border: "1px solid rgba(255,255,255,0.3)",
+          maxWidth: 680,
           textAlign: "center",
-          animation: `${fadeIn} 0.8s ease-out`,
         }}
       >
         <Collapse in={Boolean(error)}>
@@ -249,61 +143,52 @@ export default function Room({ leaveRoomCallback }) {
         <Typography
           variant="h4"
           sx={{
-            fontWeight: 800,
-            color: "#1976d2",
-            textShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            fontFamily: "Poppins, sans-serif",
+            ...titleSx,
             mb: 2,
           }}
         >
-          Room Code: {roomCode}
+          Room Code: {roomCode.toUpperCase()}
         </Typography>
 
         <MusicPlayer {...song} />
 
-        <Grid container spacing={2} sx={{ mt: 4 }}>
+        <Grid container spacing={2} justifyContent="center" sx={{ mt: 4 }}>
           {isHost && (
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm="auto">
               <Button
-                fullWidth
                 variant="contained"
                 onClick={() => setShowSettings(true)}
                 sx={{
-                  fontWeight: 600,
-                  py: 1.5,
+                  ...primaryButtonSx,
                   fontSize: "1rem",
-                  borderRadius: "10px",
-                  textTransform: "none",
-                  boxShadow: "0 4px 12px rgba(33,150,243,0.3)",
+                  minWidth: 150,
                 }}
               >
                 Settings
               </Button>
             </Grid>
           )}
-          <Grid item xs={12} sm={isHost ? 6 : 12}>
+          <Grid item xs={12} sm="auto">
             <Button
-              fullWidth
               variant="outlined"
-              color="error"
-              onClick={leaveButtonPressed}
-              sx={{
-                fontWeight: 600,
-                fontSize: "0.95rem",
-                borderRadius: "10px",
-                color: "#555",
-                borderColor: "#ccc",
-                textTransform: "none",
-                "&:hover": {
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                  borderColor: "#aaa",
-                },
-              }}
-            >
-              ← Leave Room
-            </Button>
+                color="error"
+                onClick={leaveButtonPressed}
+                sx={{
+                  ...outlineButtonSx,
+                  fontSize: "0.95rem",
+                  minWidth: 170,
+                  color: "#fecaca",
+                  borderColor: "rgba(252, 165, 165, 0.6)",
+                  "&:hover": {
+                    backgroundColor: "rgba(239,68,68,0.12)",
+                    borderColor: "rgba(252, 165, 165, 0.9)",
+                  },
+                }}
+              >
+                ← Leave Room
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
       </Paper>
     </Box>
   );
