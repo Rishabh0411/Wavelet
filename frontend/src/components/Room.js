@@ -7,6 +7,10 @@ import {
   Paper,
   Alert,
   Collapse,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import CreateRoomPage from "./CreateRoomPage";
@@ -28,8 +32,12 @@ export default function Room({ leaveRoomCallback }) {
   const [votesToSkip, setVotesToSkip] = useState(2);
   const [guestCanPause, setGuestCanPause] = useState(false);
   const [isHost, setIsHost] = useState(false);
+  const [multiDeviceSync, setMultiDeviceSync] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
+  const [participantSyncStatus, setParticipantSyncStatus] = useState(null);
+  const [devices, setDevices] = useState([]);
+  const [selectedDevice, setSelectedDevice] = useState("");
   const [song, setSong] = useState({});
   const [error, setError] = useState("");
 
@@ -55,7 +63,14 @@ export default function Room({ leaveRoomCallback }) {
         setVotesToSkip(data.votes_to_skip);
         setGuestCanPause(data.guest_can_pause);
         setIsHost(data.is_host);
-        if (data.is_host) authenticateSpotify();
+        setMultiDeviceSync(Boolean(data.multi_device_sync));
+        if (data.is_host) {
+          authenticateSpotify();
+          return;
+        }
+        if (data.multi_device_sync) {
+          loadParticipantSyncStatus();
+        }
       })
       .catch(() => setError("Failed to fetch room details"));
   };
@@ -67,11 +82,81 @@ export default function Room({ leaveRoomCallback }) {
         setSpotifyAuthenticated(data.status);
         if (!data.status) {
           fetch("/spotify/get-auth-url")
-            .then((res) => res.json())
-            .then((data) => window.location.replace(data.url));
+            .then((res) =>
+              res.json().then((payload) => ({ ok: res.ok, payload }))
+            )
+            .then(({ ok, payload }) => {
+              if (!ok || !payload?.url) {
+                throw new Error(
+                  payload?.error || "Spotify credentials are not configured."
+                );
+              }
+              window.location.replace(payload.url);
+            });
         }
       })
-      .catch(() => setError("Spotify authentication failed"));
+      .catch((err) => setError(err.message || "Spotify authentication failed"));
+  };
+
+  const requestSpotifyAuth = () => {
+    fetch("/spotify/get-auth-url")
+      .then((res) =>
+        res.json().then((payload) => ({ ok: res.ok, payload }))
+      )
+      .then(({ ok, payload }) => {
+        if (!ok || !payload?.url) {
+          throw new Error(
+            payload?.error || "Spotify credentials are not configured."
+          );
+        }
+        window.location.replace(payload.url);
+      })
+      .catch((err) => setError(err.message || "Spotify authentication failed"));
+  };
+
+  const loadParticipantDevices = () => {
+    fetch("/spotify/participant-devices")
+      .then((res) => res.json())
+      .then((data) => {
+        setDevices(data.devices || []);
+      })
+      .catch(() => setError("Failed to fetch Spotify devices"));
+  };
+
+  const loadParticipantSyncStatus = () => {
+    fetch("/spotify/participant-sync-status")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("sync status failed");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setParticipantSyncStatus(data);
+        setSelectedDevice(data.selected_device_id || "");
+        setSpotifyAuthenticated(Boolean(data.spotify_authenticated));
+        if (data.spotify_authenticated) {
+          loadParticipantDevices();
+        }
+      })
+      .catch(() => setError("Failed to fetch participant sync status"));
+  };
+
+  const handleSelectDevice = (event) => {
+    const deviceId = event.target.value;
+    setSelectedDevice(deviceId);
+    fetch("/spotify/select-device", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ device_id: deviceId }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("select device failed");
+        }
+        loadParticipantSyncStatus();
+      })
+      .catch(() => setError("Failed to set Spotify device"));
   };
 
   const getCurrentSong = () => {
@@ -114,6 +199,7 @@ export default function Room({ leaveRoomCallback }) {
         update
         votesToSkip={votesToSkip}
         guestCanPause={guestCanPause}
+        multiDeviceSync={multiDeviceSync}
         roomCode={roomCode}
         updateCallback={getRoomDetails}
         onBack={() => setShowSettings(false)}
@@ -151,6 +237,44 @@ export default function Room({ leaveRoomCallback }) {
         </Typography>
 
         <MusicPlayer {...song} />
+
+        <Collapse in={Boolean(multiDeviceSync && !isHost)}>
+          <Box sx={{ mt: 2, textAlign: "left" }}>
+            <Alert severity={spotifyAuthenticated ? "info" : "warning"} sx={{ mb: 2 }}>
+              {spotifyAuthenticated
+                ? "Multi-device sync is enabled. Select your Spotify device to join playback."
+                : "Connect Spotify to sync playback on your device."}
+            </Alert>
+
+            {!spotifyAuthenticated ? (
+              <Button variant="contained" onClick={requestSpotifyAuth} sx={{ ...primaryButtonSx, mb: 2 }}>
+                Connect Spotify
+              </Button>
+            ) : (
+              <FormControl fullWidth>
+                <InputLabel id="participant-device-label">Playback Device</InputLabel>
+                <Select
+                  labelId="participant-device-label"
+                  label="Playback Device"
+                  value={selectedDevice}
+                  onChange={handleSelectDevice}
+                >
+                  {devices.map((device) => (
+                    <MenuItem key={device.id} value={device.id}>
+                      {device.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+
+            <Collapse in={Boolean(participantSyncStatus?.last_sync_error)}>
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {participantSyncStatus?.last_sync_error}
+              </Alert>
+            </Collapse>
+          </Box>
+        </Collapse>
 
         <Grid container spacing={2} justifyContent="center" sx={{ mt: 4 }}>
           {isHost && (

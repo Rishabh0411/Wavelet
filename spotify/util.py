@@ -73,7 +73,7 @@ def refresh_spotify_token(session_id):
     )
 
 
-def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
+def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False, data=None):
     tokens = get_user_tokens(session_id)
     if not tokens:
         return {'Error': 'User not authenticated'}
@@ -84,9 +84,9 @@ def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
     }
 
     if post_:
-        response = post(BASE_URL + endpoint, headers=headers)
+        response = post(BASE_URL + endpoint, headers=headers, json=data)
     elif put_:
-        response = put(BASE_URL + endpoint, headers=headers)
+        response = put(BASE_URL + endpoint, headers=headers, json=data)
     else:
         response = get(BASE_URL + endpoint, headers=headers)
 
@@ -107,3 +107,21 @@ def pause_song(session_id):
 
 def skip_song(session_id):
     return execute_spotify_api_request(session_id, 'player/next', post_=True)
+
+
+def get_user_devices(session_id):
+    response = execute_spotify_api_request(session_id, 'player/devices')
+    if not isinstance(response, dict):
+        return []
+    return response.get('devices', [])
+
+
+def start_song_on_device(session_id, device_id, song_uri=None, progress_ms=0):
+    endpoint = f'player/play?device_id={device_id}'
+    payload = {}
+    if song_uri:
+        payload = {
+            'uris': [song_uri],
+            'position_ms': max(int(progress_ms or 0), 0),
+        }
+    return execute_spotify_api_request(session_id, endpoint, put_=True, data=payload)

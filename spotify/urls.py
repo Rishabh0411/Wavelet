@@ -10,4 +10,7 @@ urlpatterns = [
     path('pause', PauseSong.as_view()),
     path('play', PlaySong.as_view()),
     path('skip', SkipSong.as_view()),
+    path('participant-devices', ParticipantDevices.as_view()),
+    path('select-device', SelectParticipantDevice.as_view()),
+    path('participant-sync-status', ParticipantSyncStatus.as_view()),
 ]

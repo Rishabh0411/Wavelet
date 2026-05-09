@@ -33,6 +33,7 @@ export default function CreateRoomPage(props) {
   const {
     votesToSkip = 2,
     guestCanPause = true,
+    multiDeviceSync = false,
     update = false,
     roomCode = null,
     updateCallback = () => {},
@@ -42,6 +43,7 @@ export default function CreateRoomPage(props) {
 
   const [guestCanPauseState, setGuestCanPause] = useState(guestCanPause);
   const [votesToSkipState, setVotesToSkip] = useState(votesToSkip);
+  const [multiDeviceSyncState, setMultiDeviceSync] = useState(multiDeviceSync);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [show, setShow] = useState(false);
@@ -62,6 +64,10 @@ export default function CreateRoomPage(props) {
     setGuestCanPause(e.target.value === "true");
   };
 
+  const handleMultiDeviceSyncChange = (e) => {
+    setMultiDeviceSync(e.target.value === "true");
+  };
+
   const handleRoomButtonPressed = () => {
     const requestOptions = {
       method: "POST",
@@ -69,6 +75,7 @@ export default function CreateRoomPage(props) {
       body: JSON.stringify({
         votes_to_skip: votesToSkipState,
         guest_can_pause: guestCanPauseState,
+        multi_device_sync: multiDeviceSyncState,
       }),
     };
 
@@ -86,6 +93,7 @@ export default function CreateRoomPage(props) {
       body: JSON.stringify({
         votes_to_skip: votesToSkipState,
         guest_can_pause: guestCanPauseState,
+        multi_device_sync: multiDeviceSyncState,
         code: roomCode,
       }),
     };
@@ -244,6 +252,28 @@ export default function CreateRoomPage(props) {
                     label="No Control"
                   />
                 </RadioGroup>
+              </FormControl>
+            </Grid>
+
+            <Grid item sx={{ width: "100%" }}>
+              <FormControl fullWidth>
+                <FormHelperText>
+                  <Typography component="span" align="center" variant="body2" color="inherit">
+                    Multi-device Sync
+                  </Typography>
+                </FormHelperText>
+                <RadioGroup
+                  row
+                  value={multiDeviceSyncState.toString()}
+                  onChange={handleMultiDeviceSyncChange}
+                  sx={{ justifyContent: "center", mt: 1 }}
+                >
+                  <FormControlLabel value="true" control={<Radio color="primary" />} label="Enable" />
+                  <FormControlLabel value="false" control={<Radio color="secondary" />} label="Disable" />
+                </RadioGroup>
+                <FormHelperText>
+                  Joined users can sync playback on their own Spotify devices.
+                </FormHelperText>
               </FormControl>
             </Grid>
 
